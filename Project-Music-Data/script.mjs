@@ -32,7 +32,7 @@ window.onload = function () {
 
     if (!selectedUser) return;
 
-    const listens = getListenEvents(selectedUser) || [];
+    const listens = getListenEvents(Number(selectedUser)) || [];
     if (listens.length === 0) {
       resultsDiv.innerHTML = `<p>This user didn't listen to any songs.</p>`;
       return;
@@ -117,23 +117,24 @@ window.onload = function () {
     // Build results HTML
     let html = "";
     html += qaBlock(
-      "Most often listened to song:",
+      "Most listened song:",
       topSong
         ? `${topSong.artist} - ${topSong.title} (${topSongCount} times)`
         : null
     );
+     html += qaBlock(
+      "Most listened song based on time:",
+      topSongByTime ? `${topSongByTime.artist} - ${topSongByTime.title}` : null
+    );
     html += qaBlock(
-      "Most often listened to artist:",
+      "Most listened to artist:",
       topArtist ? `${topArtist} (${topArtistCount} times)` : null
     );
     html += qaBlock(
       "Most often listened to song on Friday nights (5pm–4am):",
       topFridaySong ? `${topFridaySong.artist} - ${topFridaySong.title}` : null
     );
-    html += qaBlock(
-      "Most listened to song by listening time:",
-      topSongByTime ? `${topSongByTime.artist} - ${topSongByTime.title}` : null
-    );
+   
     html += qaBlock(
       "Most listened to artist by listening time:",
       topArtistByTime || null
@@ -149,9 +150,9 @@ window.onload = function () {
       : "";
     html += genreEntries.length
       ? qaBlock(
-          genreLabel + ":",
-          genreEntries.map(([g, c]) => `${g} (${c})`).join(", ")
-        )
+        genreLabel + ":",
+        genreEntries.map(([g, c]) => `${g} (${c})`).join(", ")
+      )
       : "";
 
     resultsDiv.innerHTML = html;
