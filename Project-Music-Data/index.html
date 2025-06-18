@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Music Data Viewer App</title>
-  </head>
-  <body>
-    <main>
-      <h1>Music Listener Stats</h1>
-      <label for="userSelect">Select User:</label>
-      <select id="userSelect" aria-label="User selection dropdown">
-        <option value="">-- Choose a User --</option>
-      </select>
-
-      <section id="results" aria-live="polite"></section>
-      <script type="module" src="./script.mjs"></script>
-    </main>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Music Listening Stats</title>
+</head>
+<body>
+  <main>
+    <h1>Music Listening Stats</h1>
+    <label for="userSelect">Select a user:</label>
+    <select id="userSelect" aria-label="User selection"></select>
+    <section id="results" aria-live="polite"></section>
+  </main>
+  <script type="module" src="./script.mjs"></script>
+</body>
 </html>
