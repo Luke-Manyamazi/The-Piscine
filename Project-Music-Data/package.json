@@ -1,0 +1,9 @@
+{
+  "name": "project-music-data",
+  "version": "1.0.0",
+  "description": "A common task in software is to take some data, process it in some way, and present it usefully to someone.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  }
+}

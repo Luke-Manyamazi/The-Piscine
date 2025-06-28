@@ -1,8 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <script type="module" src="script.mjs"></script>
+    <meta charset="UTF-8" />
+    <title>Music Listening Stats</title>
   </head>
   <body>
+    <main>
+      <h1>Music Listening Stats</h1>
+      <label for="userSelect">Select a user:</label>
+      <select
+        id="userSelect"
+        aria-label="User selection"
+        value="Select User"
+      ></select>
+      <h3>Analysed Data</h3>
+      <p id="instruction"></p>
+      <section id="results" aria-live="polite"></section>
+    </main>
+    <script type="module" src="./script.mjs"></script>
   </body>
 </html>
