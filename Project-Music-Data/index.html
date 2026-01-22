@@ -7,16 +7,31 @@
   <body>
     <main>
       <h1>Music Listening Stats</h1>
-      <label for="userSelect">Select a user:</label>
-      <select
-        id="userSelect"
-        aria-label="User selection"
-        value="Select User"
-      ></select>
-      <h3>Analysed Data</h3>
-      <p id="instruction"></p>
-      <section id="results" aria-live="polite"></section>
+
+      <section aria-labelledby="user-selection">
+        <h2 id="user-selection">User Selection</h2>
+
+        <label for="userSelect">Select a user:</label>
+        <select
+          id="userSelect"
+          aria-label="User selection"
+        ></select>
+
+        <p id="instruction">
+          Select a user using the drop down above to view their analysed data.
+        </p>
+      </section>
+
+      <section aria-labelledby="analysis-results">
+        <h2 id="analysis-results">Analysed Data</h2>
+
+        <section
+          id="results"
+          aria-live="polite"
+        ></section>
+      </section>
     </main>
+
     <script type="module" src="./script.mjs"></script>
   </body>
 </html>

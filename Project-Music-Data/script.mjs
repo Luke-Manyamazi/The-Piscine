@@ -12,13 +12,6 @@ function qaRow(question, answer) {
 }
 
 window.onload = function () {
-  // Set the instruction text
-  const instruction = document.getElementById("instruction");
-  if (instruction) {
-    instruction.textContent =
-      "Select a user using the drop down above to view their analysed data.";
-  }
-
   const userSelect = document.getElementById("userSelect");
   const userIDs = getUserIDs();
 
@@ -36,10 +29,11 @@ window.onload = function () {
     userSelect.appendChild(option);
   });
 
-  userSelect.addEventListener("change", async (event) => {
+  userSelect.addEventListener("change", (event) => {
     const selectedUser = event.target.value;
     const resultsDiv = document.getElementById("results");
     const instruction = document.getElementById("instruction");
+
     resultsDiv.innerHTML = "";
 
     if (instruction) instruction.style.display = "none";
@@ -60,10 +54,14 @@ window.onload = function () {
     const artistCounts = countBy(listens, (l) => getSong(l.song_id)?.artist);
     const [topArtist, topArtistCount] = topN(artistCounts, 1)[0] || [];
 
-    const fridayListens = listens.filter((l) => isFridayNight(l.timestamp));
+    const fridayListens = listens.filter((l) =>
+      isFridayNight(l.timestamp)
+    );
     const fridaySongCounts = countBy(fridayListens, (l) => l.song_id);
     const [topFridaySongID] = topN(fridaySongCounts, 1)[0] || [];
-    const topFridaySong = topFridaySongID ? getSong(topFridaySongID) : null;
+    const topFridaySong = topFridaySongID
+      ? getSong(topFridaySongID)
+      : null;
 
     const songDurations = sumBy(
       listens,
@@ -71,7 +69,9 @@ window.onload = function () {
       (l) => getSong(l.song_id)?.duration_seconds || 0
     );
     const [topSongByTimeID] = topN(songDurations, 1)[0] || [];
-    const topSongByTime = topSongByTimeID ? getSong(topSongByTimeID) : null;
+    const topSongByTime = topSongByTimeID
+      ? getSong(topSongByTimeID)
+      : null;
 
     const artistDurations = sumBy(
       listens,
@@ -80,11 +80,12 @@ window.onload = function () {
     );
     const [topArtistByTime] = topN(artistDurations, 1)[0] || [];
 
-    // Longest streak (returns multiple if tied)
-    let maxStreak = 0,
-      curStreak = 0,
-      prevSongID = null;
+    // Longest streak
+    let maxStreak = 0;
+    let curStreak = 0;
+    let prevSongID = null;
     const streaks = {};
+
     for (const l of listens) {
       if (l.song_id === prevSongID) {
         curStreak++;
@@ -95,6 +96,7 @@ window.onload = function () {
       streaks[l.song_id] = Math.max(streaks[l.song_id] || 0, curStreak);
       maxStreak = Math.max(maxStreak, curStreak);
     }
+
     const topStreakSongs = Object.entries(streaks)
       .filter(([_, count]) => count === maxStreak)
       .map(([id]) => getSong(id))
@@ -107,6 +109,7 @@ window.onload = function () {
       if (!days[day]) days[day] = new Set();
       days[day].add(l.song_id);
     }
+
     const dayArrays = Object.values(days).map((set) => [...set]);
     const everyDaySongs = intersection(dayArrays);
     const everyDaySongTitles = [...everyDaySongs]
@@ -116,7 +119,9 @@ window.onload = function () {
       })
       .filter(Boolean);
 
-    const genreCounts = countBy(listens, (l) => getSong(l.song_id)?.genre);
+    const genreCounts = countBy(listens, (l) =>
+      getSong(l.song_id)?.genre
+    );
     const genreEntries = topN(genreCounts, 3);
     const genreLabel =
       genreEntries.length === 1
@@ -132,12 +137,16 @@ window.onload = function () {
     const topFridaySongByTime = topFridaySongByTimeID
       ? getSong(topFridaySongByTimeID)
       : null;
-    const topArtistByTimeName = topArtistByTime;
-    const topArtistByTimeDuration = artistDurations[topArtistByTimeName] || 0;
 
-    // Build QA table
+    const topArtistByTimeDuration =
+      artistDurations[topArtistByTime] || 0;
+
+    // Build QA table (still string-based — XSS fix comes next)
     let html = `<table border="1" cellpadding="6" cellspacing="0">
-      <thead><tr><th>Question</th><th>Answer</th></tr></thead><tbody>`;
+      <thead>
+        <tr><th>Question</th><th>Answer</th></tr>
+      </thead>
+      <tbody>`;
 
     html += qaRow(
       "Most listened song (count):",
@@ -147,21 +156,29 @@ window.onload = function () {
     );
     html += qaRow(
       "Most listened song (time):",
-      topSongByTime ? `${topSongByTime.artist} - ${topSongByTime.title}` : null
+      topSongByTime
+        ? `${topSongByTime.artist} - ${topSongByTime.title}`
+        : null
     );
     html += qaRow(
       "Most listened artist (count):",
-      topArtist ? `${topArtist} (${topArtistCount} times)` : null
+      topArtist
+        ? `${topArtist} (${topArtistCount} times)`
+        : null
     );
     html += qaRow(
       "Most listened artist (time):",
       topArtistByTime
-        ? `${topArtistByTime} (${Math.round(topArtistByTimeDuration / 60)} min)`
+        ? `${topArtistByTime} (${Math.round(
+            topArtistByTimeDuration / 60
+          )} min)`
         : null
     );
     html += qaRow(
       "Friday night song (count):",
-      topFridaySong ? `${topFridaySong.artist} - ${topFridaySong.title}` : null
+      topFridaySong
+        ? `${topFridaySong.artist} - ${topFridaySong.title}`
+        : null
     );
     html += qaRow(
       "Friday night song (time):",
@@ -173,16 +190,23 @@ window.onload = function () {
       "Longest streak song:",
       topStreakSongs.length && maxStreak > 1
         ? topStreakSongs
-            .map((s) => `${s.artist} - ${s.title} (${maxStreak} times)`)
+            .map(
+              (s) => `${s.artist} - ${s.title} (${maxStreak} times)`
+            )
             .join(", ")
         : null
     );
     html += qaRow(
       "Every day songs:",
-      everyDaySongTitles.length ? everyDaySongTitles.join(", ") : null
+      everyDaySongTitles.length
+        ? everyDaySongTitles.join(", ")
+        : null
     );
     html += genreEntries.length
-      ? qaRow(genreLabel + ":", genreEntries.map(([g]) => g).join(", "))
+      ? qaRow(
+          `${genreLabel}:`,
+          genreEntries.map(([g]) => g).join(", ")
+        )
       : "";
 
     html += `</tbody></table>`;

@@ -1,6 +1,7 @@
 // Helper: Get day string (YYYY-MM-DD) from timestamp
-export function getDay(ts) {
-  return new Date(ts).toISOString().slice(0, 10);
+export function getLocalDay(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
 
 // Helper: Check if listen is on Friday night (Fri 5pm–Sat 4am)

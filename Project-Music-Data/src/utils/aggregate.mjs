@@ -1,22 +1,17 @@
 // Helper: Count occurrences by key
-export function countBy(arr, keyFn) {
-  const map = {};
-  for (const item of arr) {
+function aggregateBy(arr, keyFn, valFn = () => 1) {
+  return arr.reduce((acc, item) => {
     const key = keyFn(item);
-    map[key] = (map[key] || 0) + 1;
-  }
-  return map;
+    acc[key] = (acc[key] || 0) + valFn(item);
+    return acc;
+  }, {});
 }
 
-// Helper: Sum durations by key
-export function sumBy(arr, keyFn, valFn) {
-  const map = {};
-  for (const item of arr) {
-    const key = keyFn(item);
-    map[key] = (map[key] || 0) + valFn(item);
-  }
-  return map;
-}
+export const countBy = (arr, keyFn) =>
+  aggregateBy(arr, keyFn);
+
+export const sumBy = (arr, keyFn, valFn) =>
+  aggregateBy(arr, keyFn, valFn);
 
 // Helper: Get top N from a map
 export function topN(map, n) {
